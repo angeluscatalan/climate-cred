@@ -1,0 +1,13 @@
+pandas==2.2.2
+numpy==2.0.2
+torch # Specify a version suitable for your CUDA/system setup
+transformers==5.12.1
+requests==2.32.4
+exa-py # Specify a version suitable for your needs
+spacy==3.8.14
+fastapi==0.138.0
+uvicorn==0.49.0
+
+# --- SpaCy Model ---
+# You may also need to download spaCy models, e.g.:
+# !python -m spacy download en_core_web_sm
