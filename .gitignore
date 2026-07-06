@@ -21,6 +21,11 @@ node_modules
 .next/
 .DS_Store
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
 # Python cache
 __pycache__/
 *.pyc
