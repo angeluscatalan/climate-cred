@@ -19,8 +19,10 @@ from exa_py import Exa
 import spacy
 from pydantic import BaseModel
 from fastapi import FastAPI
+from verify_claim import router as verify_router
 
 app = FastAPI()
+app.include_router(verify_router)
 
 HF_TOKEN = os.getenv('HF_TOKEN')
 C_API_TOKEN = os.getenv('C_API_TOKEN')
@@ -226,18 +228,7 @@ def verify_claim_unified(claim, num_per_source=5):
 
     return significant_results
 
-class ClaimRequest(BaseModel):
-    claim: str
-    num_per_source: int = 5 # Default value
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Climate Claim Verification API!"}
-
-@app.post("/verify-claim")
-async def verify_claim(request: ClaimRequest):
-    result_df = verify_claim_unified(request.claim, request.num_per_source)
-    if isinstance(result_df, pd.DataFrame):
-        return result_df.to_dict(orient='records')
-    else:
-        return {"error": result_df}
