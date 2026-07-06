@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@theme inline {
+  --font-serif: var(--font-serif), Georgia, serif;
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), 'Geist Mono Fallback', monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-hairline: var(--hairline);
+  --color-rule: var(--rule);
+
+  --color-forest: var(--forest);
+  --color-forest-soft: var(--forest-soft);
+  --color-clay: var(--clay);
+  --color-ochre: var(--ochre);
+  --color-slate: var(--slate);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  color-scheme: light;
+
+  --paper: #fafbf8;
+  --ink: #1a2621;
+  --ink-muted: #4f6057;
+  --hairline: #e0e3db;
+  --rule: #1a2621;
+
+  --forest: #2d8659;
+  --forest-soft: #e8f4ef;
+  --clay: #c27d4c;
+  --ochre: #d4a940;
+  --slate: #4b7099;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --primary: #2d8659;
+  --primary-foreground: #fafbf8;
+  --muted: #f0f2ed;
+  --muted-foreground: var(--ink-muted);
+  --border: #d9dcd3;
+  --input: #c5cbbf;
+  --ring: #2d8659;
+  --radius: 0px;
+  
+  /* Accent colors for dynamic elements */
+  --accent-cyan: #00d9d9;
+  --accent-lime: #7bff00;
+  --accent-coral: #ff6b5b;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  ::selection {
+    background: var(--forest-soft);
+    color: var(--ink);
+  }
+}
+
+@layer components {
+  /* Floating animation for subtle upward motion */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  
+  /* Glow animation for accent elements */
+  @keyframes glow {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  
+  /* Slide in from left */
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Slide in from bottom */
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Pulse animation */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2.5s ease-in-out infinite;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+  }
+
+  .animate-slide-in-up {
+    animation: slideInUp 0.6s ease-out;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
+  }
+}
