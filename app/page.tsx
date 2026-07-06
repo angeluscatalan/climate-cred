@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useLoading } from '@/components/page-load-provider'
 
 export default function LandingPage() {
   const [isHovered, setIsHovered] = useState(false)
+  const { startLoading } = useLoading()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-paper via-paper to-forest/5 overflow-hidden">
@@ -40,7 +42,7 @@ export default function LandingPage() {
 
           {/* CTA Button with animations */}
           <div className="flex justify-center animate-slide-in-up" style={{animationDelay: '0.3s'}}>
-            <Link href="/verify">
+            <Link href="/verify" onClick={startLoading}>
               <button
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}

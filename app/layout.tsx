@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Newsreader, Public_Sans, JetBrains_Mono } from 'next/font/google'
+import { PageLoadProvider } from '@/components/page-load-provider'
 import './globals.css'
 
 const newsreader = Newsreader({
@@ -23,7 +24,6 @@ export const metadata: Metadata = {
   title: 'ClimateCred — Climate Claim Verification',
   description:
     'Retrieval-augmented verification of climate claims against peer-reviewed evidence.',
-  generator: 'v0.app',
 }
 
 export const viewport: Viewport = {
@@ -42,7 +42,9 @@ export default function RootLayout({
       className={`${newsreader.variable} ${publicSans.variable} ${jetbrainsMono.variable} bg-background`}
     >
       <body className="font-sans antialiased">
-        {children}
+        <PageLoadProvider>
+          {children}
+        </PageLoadProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
