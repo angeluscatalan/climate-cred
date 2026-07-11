@@ -17,6 +17,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ detail: 'Claim cannot be empty.' }, { status: 422 })
     }
 
+    // --- CLIMATE KEYWORD FILTER ---
+    // Checks the claim against common environmental keywords before sending to backend
+    const climateRegex = /\b(climate|climate change|carbon|emission|emissions|warming|co2|greenhouse|fossil|temperature|environment|environmental|methane|renewable|solar|wind|coal|oil|gas|petroleum|hydro|nuclear|biodiversity|deforestation|forest|ocean|glacier|ice|sea level|coral|ecology|ecosystem|extinction|pollution|ozone|smog|sustainability|sustainable|net-zero|net zero|offset|footprint|mitigation|adaptation|drought|flood|hurricane|wildfire|heatwave)\b/i;    
+    if (!climateRegex.test(body.claim)) {
+      return NextResponse.json(
+        { detail: 'Please enter a statement related to climate or the environment.' }, 
+        { status: 400 }
+      )
+    }
+    // ------------------------------
+
     const upstream = await fetch(`${FASTAPI_URL}/verify-claim`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
