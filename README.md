@@ -7,9 +7,9 @@ clone the repository first
 after cloning, open the cloned folder and in the main folder of Climate Cred
 run the following scripts
 
-`python -m venv .venv`
-`.venv/Scripts/Activate`
-`pip install -r requirements.txt`
+`python -m venv .venv`\n
+`.venv/Scripts/Activate`\n
+`pip install -r requirements.txt`\n
 
 Then wait for installation to finish
 
@@ -17,11 +17,11 @@ Next, ensure that you have a .env or a .env.local file in your main folder
 if you do not have a .env or .env.local file, create a new file and name it `.env`
 
 in your .env file
-`HF_TOKEN=<RCSCode Read Hugging Face token>`
-`C_API_TOKEN=<Your CurrentsAPI Token>`
-`GNEWS_API_KEY=<Your GNewsAPI Token>`
-`EXA_API_KEY=<Your Exa.ai API Token>`
-`F_CRAWL_KEY=<Your Firecrawl API Token>`
+`HF_TOKEN=<RCSCode Read Hugging Face token>`\n
+`C_API_TOKEN=<Your CurrentsAPI Token>`\n
+`GNEWS_API_KEY=<Your GNewsAPI Token>`\n
+`EXA_API_KEY=<Your Exa.ai API Token>`\n
+`F_CRAWL_KEY=<Your Firecrawl API Token>`\n
 
 if you need to request the HF token, contact us.
 The other tokens can be obtained from the API sites.
