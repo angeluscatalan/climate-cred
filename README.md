@@ -19,6 +19,7 @@ Next, ensure that you have a .env or a .env.local file in your main folder
 if you do not have a .env or .env.local file, create a new file and name it `.env`
 
 in your .env file
+
 `HF_TOKEN=<RCSCode Read Hugging Face token>`
 
 `C_API_TOKEN=<Your CurrentsAPI Token>`
@@ -35,10 +36,15 @@ The other tokens can be obtained from the API sites.
 ## Execution
 to run the climate cred program, open 2 terminals, needed for both the Next.js and the backend
 go to the main directory of your cloned repository folder and run the command on the **first terminal**
+
 `npm run dev`
+
 next, on **the second terminal**, navigate to the backend folder of climate cred using
+
 `cd backend`
+
 then run
+
 `uvicorn main:app --reload`
 
 Your app should now be running at `http://localhost:3000/`
