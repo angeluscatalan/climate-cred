@@ -1,11 +1,10 @@
 import os
 import torch
-import spacy
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import shap
 import numpy as np
 
-HF_TOKEN = userdata.get('HF_TOKEN_WRITE')
+HF_TOKEN = os.getenv('HF_TOKEN_WRITE')
 MODEL_ID = "RCSCode/Climate_Cred"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = AutoModelForSequenceClassification.from_pretrained(
@@ -13,7 +12,6 @@ model = AutoModelForSequenceClassification.from_pretrained(
 ).to(device)
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, token=HF_TOKEN)
 
-nlp = spacy.load("en_core_web_sm")
 
 LABEL_MAP = {0: "REFUTES", 1: "SUPPORTS", 2: "NOT_ENOUGH_INFO"}
 

@@ -11,7 +11,7 @@ router = APIRouter()
 
 class ClaimRequest(BaseModel):
     claim: str
-    num_per_source: int = 5
+    num_per_source: int = 3
 
 
 @router.post("/verify-claim")

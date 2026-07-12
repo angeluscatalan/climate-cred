@@ -220,7 +220,7 @@ def verify_with_exa(user_claim: str, num_articles: int = 5) -> pd.DataFrame | st
 # Unified verifier — returns a list of dicts (JSON-friendly)
 # ---------------------------------------------------------------------------
 
-def verify_claim_unified(claim: str, num_per_source: int = 5) -> list[dict] | str:
+def verify_claim_unified(claim: str, num_per_source: int = 3) -> list[dict] | str:
     all_dfs = []
 
     for fetch_fn in (verify_with_currents, verify_with_gnews, verify_with_exa):

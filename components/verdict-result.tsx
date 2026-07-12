@@ -47,7 +47,7 @@ export function VerdictResult({
           {verified && style ? (
             <>
               <div className="flex items-baseline gap-3">
-                <p className={`font-serif text-6xl font-medium leading-none sm:text-7xl animate-float ${style.color}`}>
+                <p className={`font-serif text-6xl font-medium leading-none sm:text-7xl animate-float ${style.color}`} id='verdict-txt'>
                   {style.label}
                 </p>
                 <span className={`inline-block w-2 h-2 rounded-full animate-glow ${style.color.replace('text-', 'bg-')}`} />
@@ -88,7 +88,7 @@ export function VerdictResult({
         </p>
 
         {explanation && explanation.length > 0 ? (
-          <p className="font-serif text-lg leading-relaxed">
+          <p className="font-serif text-lg leading-relaxed" id='simple-token-explanation-txt'>
             {explanation.map((token, i) => (
               <span
                 key={i}

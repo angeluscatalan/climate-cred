@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         claim: body.claim.trim(),
-        num_per_source: body.num_per_source ?? 5,
+        num_per_source: body.num_per_source ?? 3,
       }),
     })
 

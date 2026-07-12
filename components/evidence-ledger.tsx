@@ -20,17 +20,18 @@ export function EvidenceLedger({ evidence }: { evidence?: Evidence[] }) {
           Evidence
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-forest animate-pulse-slow" />
         </h2>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted" id='num-of-evidence-txt'>
           {hasEvidence ? `${evidence.length} passage${evidence.length !== 1 ? 's' : ''} retrieved` : 'No passages retrieved'}
         </span>
       </div>
 
       {hasEvidence ? (
-        <ol className="space-y-4">
+        <ol className="space-y-4" id='evidence-list'>
           {evidence.map((item) => (
             <li
               key={item.rank}
               className="group border border-hairline bg-card p-4 transition-all hover:border-forest/40 hover:shadow-sm"
+              id={`rank-${item.rank}-evidence`}
             >
               <div className="flex items-start justify-between gap-4">
                 {/* Rank + title */}
@@ -39,11 +40,11 @@ export function EvidenceLedger({ evidence }: { evidence?: Evidence[] }) {
                     {String(item.rank).padStart(2, '0')}
                   </span>
                   <div className="min-w-0">
-                    <p className="font-serif text-sm text-ink leading-snug">
+                    <p className="font-serif text-sm text-ink leading-snug" id={`rank-${item.rank}-evidence-used`}>
                       {item.evidence_used || item.title}
                     </p>
                     <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.15em] text-ink-muted/70">
-                      {item.source}
+                      {item.source} 
                     </p>
                   </div>
                 </div>
@@ -54,10 +55,11 @@ export function EvidenceLedger({ evidence }: { evidence?: Evidence[] }) {
                     className={`border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.15em] ${
                       VERDICT_BADGE[item.verdict] ?? VERDICT_BADGE.INSUFFICIENT
                     }`}
+                    id={`rank-${item.rank}-verdict`}
                   >
                     {item.verdict}
                   </span>
-                  <span className="font-mono text-[10px] text-ink-muted tabular-nums">
+                  <span className="font-mono text-[10px] text-ink-muted tabular-nums" id={`rank-${item.rank}-confidence`}>
                     {item.confidence.toFixed(1)}%
                   </span>
                 </div>
@@ -70,6 +72,7 @@ export function EvidenceLedger({ evidence }: { evidence?: Evidence[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-3 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.15em] text-forest/70 transition-colors hover:text-forest"
+                  id={`rank-${item.rank}-url`}
                 >
                   View source
                   <span aria-hidden>↗</span>

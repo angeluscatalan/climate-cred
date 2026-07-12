@@ -32,6 +32,7 @@ export function ConfidenceGauge({ value, color }: Props) {
       className="h-auto w-full max-w-[240px] animate-pulse-slow"
       role="img"
       aria-label={`Confidence ${clamped} percent`}
+      id='confidence-gauge'
     >
       {/* outer arc */}
       <path

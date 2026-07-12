@@ -71,7 +71,7 @@ export default function Page() {
 
           {/* Loading state */}
           {loading && (
-            <div className="py-8 flex flex-col items-center gap-3 animate-slide-in-up">
+            <div className="py-8 flex flex-col items-center gap-3 animate-slide-in-up" id='loading-state-div'>
               <div className="flex gap-1.5">
                 {[0, 1, 2].map((i) => (
                   <span
@@ -90,13 +90,14 @@ export default function Page() {
           {/* Error state */}
           {error && (
             <div className="py-6 border border-red-200 bg-red-50 px-4 animate-slide-in-up">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-red-600 mb-1">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-red-600 mb-1" id="verification-failed-txt">
                 Verification failed
               </p>
               <p className="font-serif text-sm text-red-700">{error}</p>
               <button
                 onClick={handleTryAgain}
                 className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-red-600 underline hover:no-underline"
+                id='try-again-btn'
               >
                 Try again
               </button>
