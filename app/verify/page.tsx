@@ -12,17 +12,21 @@ import { ClaimInput } from '@/components/claim-input'
 import { VerdictResult } from '@/components/verdict-result'
 import { EvidenceLedger } from '@/components/evidence-ledger'
 import { ShapExplanation } from '@/components/shap-explanation'
-import { verifyClaim, type VerificationResult } from '@/lib/verify'
+import { verifyClaim, explainClaim, type VerificationResult, type ShapResult } from '@/lib/verify'
 
 export default function Page() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<VerificationResult | null>(null)
+  const [shap, setShap] = useState<ShapResult | null>(null)
+  const [shapLoading, setShapLoading] = useState(false)
 
   const handleVerify = async (claim: string) => {
     setLoading(true)
     setError(null)
     setResult(null)
+    setShap(null)
+    setShapLoading(false)
 
     try {
       const data = await verifyClaim(claim)
@@ -34,18 +38,61 @@ export default function Page() {
     }
   }
 
+  const handleExplain = async () => {
+    if (!result) return
+    setShapLoading(true)
+    const topEvidence = [...result.evidence].sort(
+      (a, b) => b.confidence - a.confidence,
+    )[0]
+    if (!topEvidence) { setShapLoading(false); return }
+    try {
+      const data = await explainClaim(result.claim, topEvidence.evidence_used)
+      setShap(data)
+    } catch (err) {
+      console.warn('SHAP explanation failed:', err)
+    } finally {
+      setShapLoading(false)
+    }
+  }
+
   const handleTryAgain = () => {
     setResult(null)
+    setShap(null)
+    setShapLoading(false)
     setError(null)
   }
 
   const verified = result !== null
 
   const AdBox = ({ label }: { label: string }) => (
-    <div className="border border-hairline bg-card p-4 h-full">
-      <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-muted">
-        {/* AD SPACE — {label} */}
+    <div className="border border-hairline bg-card flex flex-col items-center justify-center h-full gap-4 px-6 py-8 select-none">
+      {/* Animated accent — mirrors the masthead decoration */}
+      <div className="relative w-12 h-12">
+        <div className="absolute inset-0 rounded-full border-2 border-forest/20 animate-spin" style={{ animationDuration: '8s' }} />
+        <div className="absolute inset-2 rounded-full bg-forest/5 animate-pulse-slow" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-forest animate-glow" />
       </div>
+
+      {/* System name */}
+      <p className="font-serif text-2xl font-medium tracking-tight text-ink animate-float">
+        ClimateCred
+      </p>
+
+      {/* Thick rule — same as masthead */}
+      <div className="w-full h-[3px] bg-gradient-to-r from-forest to-forest/30" />
+      <div className="w-full h-px bg-hairline -mt-3" />
+
+      {/* Ad call-to-action */}
+      <div className="text-center mt-1">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted">
+          Your Ad Here
+        </p>
+        <p className="font-mono text-[9px] text-ink-muted/50 mt-1 tracking-wide">
+          Reach climate-aware readers
+        </p>
+      </div>
+
+      <span className="sr-only">{label}</span>
     </div>
   )
 
@@ -121,7 +168,7 @@ export default function Page() {
                 explanation={result.explanation}
               />
               <EvidenceLedger evidence={result.evidence} />
-              <ShapExplanation onTryAgain={handleTryAgain} />
+              <ShapExplanation shap={shap ?? undefined} shapLoading={shapLoading} onExplain={handleExplain} onTryAgain={handleTryAgain} />
             </>
           )}
         </div>

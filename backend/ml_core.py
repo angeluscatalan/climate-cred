@@ -223,7 +223,7 @@ def verify_with_exa(user_claim: str, num_articles: int = 5) -> pd.DataFrame | st
 def verify_claim_unified(claim: str, num_per_source: int = 3) -> list[dict] | str:
     all_dfs = []
 
-    for fetch_fn in (verify_with_currents, verify_with_gnews, verify_with_exa):
+    for fetch_fn in (verify_with_exa, verify_with_currents, verify_with_gnews):
         result = fetch_fn(claim, num_per_source)
         if isinstance(result, pd.DataFrame):
             all_dfs.append(result)

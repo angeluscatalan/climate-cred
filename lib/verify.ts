@@ -1,7 +1,7 @@
 // lib/verify.ts
 // ---------------------------------------------------------------------------
 // Single seam between the UI and the FastAPI backend.
-// All components import types and verifyClaim from here.
+// All components import types and verifyClaim / explainClaim from here.
 // ---------------------------------------------------------------------------
 
 export type Verdict = "SUPPORTS" | "REFUTES" | "INSUFFICIENT";
@@ -23,6 +23,29 @@ export type Evidence = {
   evidence_used: string;
 };
 
+// ---------------------------------------------------------------------------
+// SHAP types
+// ---------------------------------------------------------------------------
+
+/** Backend label names as returned by LABEL_MAP in shap_core.py */
+export type ShapLabel = "SUPPORTS" | "REFUTES" | "NOT_ENOUGH_INFO";
+
+export type ShapToken = {
+  /** The token string (may include punctuation / subword markers) */
+  text: string;
+  /** SHAP attribution for the predicted class — can be negative */
+  shap_value: number;
+  /** Per-class SHAP values for optional multi-class view */
+  shap_per_class: Record<ShapLabel, number>;
+};
+
+export type ShapResult = {
+  predicted_label: ShapLabel;
+  /** 0–1 model confidence for the predicted class */
+  confidence: number;
+  tokens: ShapToken[];
+};
+
 export type VerificationResult = {
   claim: string;
   verdict: Verdict;
@@ -30,6 +53,8 @@ export type VerificationResult = {
   confidence: number;
   explanation: ExplanationToken[];
   evidence: Evidence[];
+  /** Populated after explainClaim() resolves; undefined until then */
+  shap?: ShapResult;
 };
 
 // ---------------------------------------------------------------------------
@@ -126,4 +151,28 @@ export async function verifyClaim(claim: string): Promise<VerificationResult> {
 
   const rows: RawEvidenceItem[] = await res.json();
   return mapToResult(claim, rows);
+}
+
+// ---------------------------------------------------------------------------
+// SHAP — call after verifyClaim() to get token-level attributions.
+// Pass the claim and the top evidence sentence from the result.
+// ---------------------------------------------------------------------------
+export async function explainClaim(
+  claim: string,
+  evidence: string,
+): Promise<ShapResult> {
+  const res = await fetch("/api/explain", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ claim, evidence }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(
+      (err as { detail?: string }).detail ?? "SHAP explanation failed",
+    );
+  }
+
+  return res.json() as Promise<ShapResult>;
 }
