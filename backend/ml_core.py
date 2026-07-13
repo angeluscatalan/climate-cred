@@ -103,35 +103,47 @@ def fetch_relevant_sentence(url: str, reference_text: str) -> str:
 # ---------------------------------------------------------------------------
 
 def verify_with_currents(user_claim: str, num_articles: int = 10) -> pd.DataFrame | str:
-    extracted = extract_main_subject(user_claim)
-    search_query = extracted["noun_phrases"][0] if extracted["noun_phrases"] else user_claim
-
-    res = requests.get(
-        "https://api.currentsapi.services/v1/search",
-        params={"keywords": search_query, "language": "en", "apiKey": C_API_TOKEN},
-    )
-    news_data = res.json().get("news", [])
-
-    if not news_data and extracted["main_subjects"]:
-        fallback_query = extracted["main_subjects"][0]
+    # Helper to safely fetch and parse JSON without crashing
+    def fetch_news(query: str) -> list:
         res = requests.get(
             "https://api.currentsapi.services/v1/search",
-            params={"keywords": fallback_query, "language": "en", "apiKey": C_API_TOKEN},
+            params={"keywords": query, "language": "en", "apiKey": C_API_TOKEN},
         )
-        news_data = res.json().get("news", [])
+        if res.status_code == 200:
+            try:
+                return res.json().get("news", [])
+            except requests.exceptions.JSONDecodeError:
+                return []
+        else:
+            print(f"Currents API Error ({res.status_code}): {res.text}")
+            return []
+
+    # 1. Attempt search with the exact user_claim first
+    news_data = fetch_news(user_claim)
+
+    # 2. Fall back to extracted phrases if the initial search yields no results
+    if not news_data:
+        extracted = extract_main_subject(user_claim)
+        
+        if extracted.get("noun_phrases"):
+            news_data = fetch_news(extracted["noun_phrases"][0])
+
+        # 3. Final fallback to main_subjects if noun_phrases also yields no results
+        if not news_data and extracted.get("main_subjects"):
+            news_data = fetch_news(extracted["main_subjects"][0])
 
     if not news_data:
-        return f"No relevant news articles found for '{search_query}'."
+        return "No relevant news articles found for the claim or its extracted subjects."
 
     results = []
     for article in news_data[:num_articles]:
-        
         # --- NEW CODE: Get the exact sentence from the article content ---
-        # We use the article's title as the reference to find the best sentence
         extracted_evidence = fetch_relevant_sentence(article["url"], article["title"])
+        
         # Fallback to original logic if the scraper returns nothing or fails
         if not extracted_evidence:
             extracted_evidence = f"{article['title']}. {article['description']}"
+            
         pred_idx, conf = perform_nli(user_claim, extracted_evidence)
         results.append(
             {
@@ -147,27 +159,50 @@ def verify_with_currents(user_claim: str, num_articles: int = 10) -> pd.DataFram
 
 
 def verify_with_gnews(user_claim: str, num_articles: int = 5) -> pd.DataFrame | str:
-    extracted = extract_main_subject(user_claim)
-    search_query = extracted["noun_phrases"][0] if extracted["noun_phrases"] else user_claim
-
     GNEWS_API_KEY = os.getenv("GNEWS_API_KEY")
-    url = (
-        f"https://gnews.io/api/v4/search"
-        f"?q={search_query}&lang=en&max={num_articles}&apikey={GNEWS_API_KEY}"
-    )
-    data = requests.get(url).json()
-    articles = data.get("articles", [])
+    base_url = "https://gnews.io/api/v4/search"
+
+    # Helper to safely fetch and parse JSON without crashing
+    def fetch_articles(query: str) -> list:
+        res = requests.get(
+            base_url,
+            params={"q": query, "lang": "en", "max": num_articles, "apikey": GNEWS_API_KEY}
+        )
+        if res.status_code == 200:
+            try:
+                return res.json().get("articles", [])
+            except requests.exceptions.JSONDecodeError:
+                return []
+        else:
+            print(f"GNews API Error ({res.status_code}): {res.text}")
+            return []
+
+    # 1. Attempt search with the exact user_claim first
+    articles = fetch_articles(user_claim)
+
+    # 2. Fall back to extracted phrases if the initial search yields no results
+    if not articles:
+        extracted = extract_main_subject(user_claim)
+        
+        if extracted.get("noun_phrases"):
+            articles = fetch_articles(extracted["noun_phrases"][0])
+
+        # 3. Final fallback to main_subjects if noun_phrases also yields no results
+        if not articles and extracted.get("main_subjects"):
+            articles = fetch_articles(extracted["main_subjects"][0])
 
     if not articles:
-        return f"No results found on GNews for '{search_query}'."
+        return "No results found on GNews for the claim or its extracted subjects."
 
     results = []
     for article in articles:
         # --- NEW CODE: Get the exact sentence from the article content ---
         extracted_evidence = fetch_relevant_sentence(article["url"], article["title"])
+        
         # Fallback to original logic if the scraper returns nothing or fails
         if not extracted_evidence:
             extracted_evidence = f"{article['title']}. {article['description']}"
+            
         pred_idx, conf = perform_nli(user_claim, extracted_evidence)
         results.append(
             {
