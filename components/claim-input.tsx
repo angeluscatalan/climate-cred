@@ -46,6 +46,7 @@ export function ClaimInput({
         onChange={(e) => setClaim(e.target.value.slice(0, 230))}
         onKeyDown={handleKeyDown}
         disabled={loading}
+        id="claim-input"
         maxLength={230}
         placeholder="e.g. The last decade was the warmest on record."
         aria-label="Climate claim to verify"
@@ -70,6 +71,7 @@ export function ClaimInput({
           type="button"
           onClick={handleVerify}
           disabled={loading || !claim.trim()}
+          id="verify-button"
           className="mt-6 inline-flex items-center gap-2 bg-primary px-6 py-3 font-mono text-xs uppercase tracking-[0.18em] text-primary-foreground transition-all hover:opacity-90 hover:shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none"
         >
           {loading ? (

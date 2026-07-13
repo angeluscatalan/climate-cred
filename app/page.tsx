@@ -53,7 +53,7 @@ export default function LandingPage() {
                 
                 {/* Button content */}
                 <div className="relative flex items-center gap-3">
-                  <span>Start Verifying</span>
+                  <span id='cta-button-text'>Start Verifying</span>
                   <span className={`text-base leading-none transition-all duration-300 ${isHovered ? 'translate-x-2' : ''} inline-block`}>
                     →
                   </span>
